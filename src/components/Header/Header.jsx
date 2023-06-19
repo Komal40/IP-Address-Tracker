@@ -2,13 +2,23 @@ import React, { useState } from 'react'
 import './Header.css'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import LocationMarker from '../LocationMarker/LocationMarker';
+import { useTrackIpQuery } from '../../services/IpAddress';
+import { skipToken } from '@reduxjs/toolkit/dist/query';
+
 
 export default function Header() {
 
     const [inputValue, setInputValue] = useState("");
+    const [searchTerm, setSearchTerm] = useState(skipToken)
+
+    
+    // conditional fetching
+    const {data, error, isLoading} = useTrackIpQuery(searchTerm)   
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setSearchTerm(inputValue)
     };
 
     return (
@@ -31,8 +41,15 @@ export default function Header() {
                     </button>
                 </form>
 
-                <div className="data-container">
-                    <div className="address data-container-items">
+                <div className={data==undefined ? "hide" : "data-container"}>
+                {
+                    error ? (
+                        <>Opps error ocurred</>
+                    ) : isLoading ? (
+                        <>Loading ...</>
+                    ) : data ? (
+                        <>
+                        <div className="address data-container-items">
                         <p className="data-title">ip address</p>
                         <p className="data">123456</p>
                     </div>
@@ -51,6 +68,9 @@ export default function Header() {
                         <p className="data-title">isp</p>
                         <p className="data">location</p>
                     </div>
+                        </>
+                    ) : null
+                }
                 </div>
             </section>
             <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
@@ -59,8 +79,7 @@ export default function Header() {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <LocationMarker position={{lat:51.505, lng:-0.09}}/>
-            </MapContainer>
-            
+            </MapContainer>          
         </>
     )
 }

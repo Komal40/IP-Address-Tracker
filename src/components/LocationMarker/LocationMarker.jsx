@@ -7,4 +7,5 @@ export default function LocationMarker({position}) {
   map.flyTo([position.lat, position.lng], 13, {animate:true})
   
   return position!=null ? <Marker position={position}></Marker> : null
+  
 }
