@@ -51,35 +51,39 @@ export default function Header() {
                         <>
                         <div className="address data-container-items">
                         <p className="data-title">ip address</p>
-                        <p className="data">123456</p>
+                        <p className="data">{data.ip}</p>
                     </div>
 
                     <div className="location data-container-items">
                         <p className="data-title">location</p>
-                        <p className="data">City,region, country</p>
+                        <p className="data">{data.location.city},{data.location.region},{data.location.country}</p>
                     </div>
 
                     <div className="timezone data-container-items">
                         <p className="data-title">timezone</p>
-                        <p className="data">UTC time</p>
+                        <p className="data">{data.location.timezone}</p>
                     </div>
 
                     <div className="isp data-container-items">
                         <p className="data-title">isp</p>
-                        <p className="data">location</p>
+                        <p className="data">{data.isp}</p>
                     </div>
                         </>
                     ) : null
                 }
                 </div>
             </section>
-            <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+            {
+                data && data.location && (
+                    <MapContainer center={[data.location.lat, data.location.lng]} zoom={13} scrollWheelZoom={false}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
-                <LocationMarker position={{lat:51.505, lng:-0.09}}/>
-            </MapContainer>          
+                <LocationMarker position={{lat:data.location.lat, lng:data.location.lng}}/>
+            </MapContainer>   
+                )
+            }       
         </>
     )
 }
